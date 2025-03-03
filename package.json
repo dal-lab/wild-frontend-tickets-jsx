@@ -1,0 +1,16 @@
+{
+  "name": "wild-frontend-tickets-jsx",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "vite --port 8080"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "vite": "^6.2.0"
+  }
+}
