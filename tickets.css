@@ -37,6 +37,19 @@ body {
     }
 }
 
+#comment-list {
+    li {
+        /* max-width: 36rem; */
+        margin-block: 1rem;
+        padding: 1rem;
+        border: 1px solid #CCC;
+    }
+}
+
+.no-comments {
+    margin-top: 1rem;
+}
+
 form {
     margin-block: 2rem;
     max-width: 40rem;
