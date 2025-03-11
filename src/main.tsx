@@ -45,6 +45,7 @@ interface Ticket {
   description: string;
   status: "open" | "closed";
   toggle(): void;
+  comments: string[];
 }
 
 function Header() {
@@ -58,6 +59,7 @@ function Header() {
 function Main({
   tickets,
   addTicket,
+  addComment,
 }: {
   tickets: Ticket[];
   addTicket: ({
@@ -67,26 +69,77 @@ function Main({
     title: string;
     description: string;
   }) => void;
+  addComment: (comment: string, ticketId: number) => void;
 }) {
   return (
     <main>
-      <TicketList tickets={tickets} />
       <TicketForm addTicket={addTicket} />
+      <TicketList tickets={tickets} addComment={addComment} />
     </main>
   );
 }
 
-function TicketList({ tickets }: { tickets: Ticket[] }) {
+function CommentList({ comments }: { comments: string[] }) {
+  return (
+    <div id="comments">
+      {comments.map((comment) => (
+        <div className="comment-item">{comment}</div>
+      ))}
+    </div>
+  );
+}
+
+function CommentForm({
+  addComment,
+  ticketId,
+}: {
+  addComment: (comment: string, ticketId: number) => void;
+  ticketId: number;
+}) {
+  const handleAddComment = (event: Event) => {
+    event.preventDefault();
+
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const comment = formData.get("comment") as string;
+
+    addComment(comment, ticketId);
+  };
+
+  return (
+    <form id="add-comment-form" onSubmit={handleAddComment}>
+      <div>
+        <label htmlFor="comment">Add a comment</label>
+        <input type="text" name="comment" id="comment" />
+      </div>
+      <button type="submit">Add Comment</button>
+    </form>
+  );
+}
+
+function TicketList({
+  tickets,
+  addComment,
+}: {
+  tickets: Ticket[];
+  addComment: (comment: string, ticketId: number) => void;
+}) {
   return (
     <ul id="ticket-list">
       {tickets.map((ticket) => (
-        <TicketItem ticket={ticket} />
+        <TicketItem ticket={ticket} addComment={addComment} />
       ))}
     </ul>
   );
 }
 
-function TicketItem({ ticket }: { ticket: Ticket }) {
+function TicketItem({
+  ticket,
+  addComment,
+}: {
+  ticket: Ticket;
+  addComment: (comment: string, ticketId: number) => void;
+}) {
   const handleClick = () => {
     ticket.toggle();
   };
@@ -96,8 +149,16 @@ function TicketItem({ ticket }: { ticket: Ticket }) {
       <div className="title">{ticket.title}</div>
       <div className="description">{ticket.description}</div>
       <button className="status" onClick={handleClick}>
-        {ticket.status === "open" ? "Open" : "Closed"}
+        {ticket.status === "open" ? "댓글창 닫기" : "댓글창 열기"}
       </button>
+      {ticket.status === "open" ? (
+        <div id="comments">
+          <CommentForm addComment={addComment} ticketId={ticket.id} />
+          <CommentList comments={ticket.comments} />
+        </div>
+      ) : (
+        ""
+      )}
     </li>
   );
 }
@@ -149,6 +210,7 @@ function render({
   root,
   tickets,
   addTicket,
+  addComment,
 }: {
   root: HTMLElement;
   tickets: Ticket[];
@@ -159,11 +221,12 @@ function render({
     title: string;
     description: string;
   }) => void;
+  addComment: (comment: string, ticketId: number) => void;
 }) {
   root.replaceChildren(
     <div>
       <Header />
-      <Main tickets={tickets} addTicket={addTicket} />
+      <Main tickets={tickets} addTicket={addTicket} addComment={addComment} />
     </div>
   );
 }
@@ -174,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tickets: Ticket[] = [];
 
     const update = () => {
-      render({ root, tickets, addTicket });
+      render({ root, tickets, addTicket, addComment });
     };
 
     const addTicket = ({
@@ -185,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
       description: string;
     }) => {
       const id = Math.max(...tickets.map((ticket) => ticket.id), 0) + 1;
+
       const ticket: Ticket = {
         id,
         title,
@@ -194,10 +258,19 @@ document.addEventListener("DOMContentLoaded", () => {
           this.status = this.status === "open" ? "closed" : "open";
           update();
         },
+        comments: [],
       };
 
       tickets.push(ticket);
       update();
+    };
+
+    const addComment = (comment: string, ticketId: number) => {
+      const ticket = tickets.find((ticket) => ticket.id === ticketId);
+      if (ticket) {
+        ticket.comments.push(comment);
+        update();
+      }
     };
 
     update();
