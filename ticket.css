@@ -65,3 +65,18 @@ form {
     padding: 0.8rem 1rem;
   }
 }
+
+#comments {
+  margin-block: 1rem;
+}
+
+.comment-item {
+  margin-block: 0.5rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.status {
+  margin-block: 0.5rem;
+}
