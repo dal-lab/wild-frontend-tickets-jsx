@@ -152,7 +152,7 @@ function TicketItem({
   };
 
   return (
-    <li>
+    <li key={ticket.id}>
       <div className="title">{ticket.title}</div>
       <div className="description">{ticket.description}</div>
       <button className="status" onClick={handleClick}>
