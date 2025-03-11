@@ -86,7 +86,7 @@ function Main({
 
 function CommentList({ comments }: { comments: IComment[] }) {
   return (
-    <div id="comments">
+    <div>
       {comments.map((comment) => (
         <div className="comment-item" key={comment.id}>
           {comment.comment}
