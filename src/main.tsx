@@ -39,13 +39,18 @@ function createElement(
   return element;
 }
 
+interface IComment {
+  id: number;
+  comment: string;
+}
+
 interface Ticket {
   id: number;
   title: string;
   description: string;
   status: "open" | "closed";
   toggle(): void;
-  comments: string[];
+  comments: IComment[];
 }
 
 function Header() {
@@ -79,11 +84,13 @@ function Main({
   );
 }
 
-function CommentList({ comments }: { comments: string[] }) {
+function CommentList({ comments }: { comments: IComment[] }) {
   return (
     <div id="comments">
       {comments.map((comment) => (
-        <div className="comment-item">{comment}</div>
+        <div className="comment-item" key={comment.id}>
+          {comment.comment}
+        </div>
       ))}
     </div>
   );
@@ -268,7 +275,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const addComment = (comment: string, ticketId: number) => {
       const ticket = tickets.find((ticket) => ticket.id === ticketId);
       if (ticket) {
-        ticket.comments.push(comment);
+        ticket.comments = [
+          ...ticket.comments,
+          {
+            id: Math.max(...ticket.comments.map((c) => c.id), 0) + 1,
+            comment,
+          },
+        ];
         update();
       }
     };
