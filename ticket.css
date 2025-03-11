@@ -16,7 +16,7 @@ body {
   font-size: 1.6rem;
 }
 
-티켓 관리 기능 추가 #ticket-list {
+#ticket-list {
   margin: 0;
   padding: 0;
   list-style: none;
