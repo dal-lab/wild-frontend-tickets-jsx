@@ -156,16 +156,12 @@ function TicketItem({
       <div className="title">{ticket.title}</div>
       <div className="description">{ticket.description}</div>
       <button className="status" onClick={handleClick}>
-        {ticket.status === "open" ? "댓글창 닫기" : "댓글창 열기"}
+        {ticket.status === "open" ? "OPEN" : "CLOSED"}
       </button>
-      {ticket.status === "open" ? (
-        <div id="comments">
-          <CommentForm addComment={addComment} ticketId={ticket.id} />
-          <CommentList comments={ticket.comments} />
-        </div>
-      ) : (
-        ""
-      )}
+      <div id="comments">
+        <CommentForm addComment={addComment} ticketId={ticket.id} />
+        <CommentList comments={ticket.comments} />
+      </div>
     </li>
   );
 }
